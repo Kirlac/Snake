@@ -3,28 +3,24 @@
 # http://inventwithpython.com/pygame
 # Creative Commons BY-NC-SA 3.0 US
 
-import pygame
 import random
 import sys
+
+import pygame
 from pygame.locals import *
+
+from game.colors import colors
+from game.snake import snake
+from game.food import food
 
 FPS = 15
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 20
-assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
-assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
 CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 
-# RGB
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-DARKGREEN = (0, 155, 0)
-DARKGREY = (40, 40, 40)
-BGCOLOR = BLACK
+BGCOLOR = colors.BLACK
 
 UP = 'up'
 DOWN = 'down'
@@ -66,13 +62,17 @@ def runGame():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT:
+                if ((event.key == K_LEFT or event.key == K_a) and
+                     direction != RIGHT):
                     direction = LEFT
-                elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT:
+                elif ((event.key == K_RIGHT or event.key == K_d) and
+                       direction != LEFT):
                     direction = RIGHT
-                elif (event.key == K_UP or event.key == K_w) and direction != DOWN:
+                elif ((event.key == K_UP or event.key == K_w) and
+                       direction != DOWN):
                     direction = UP
-                elif (event.key == K_DOWN or event.key == K_s) and direction != UP:
+                elif ((event.key == K_DOWN or event.key == K_s) and
+                       direction != UP):
                     direction = DOWN
                 elif event.key == K_ESCAPE:
                     terminate()
@@ -82,12 +82,16 @@ def runGame():
             wormCoords[HEAD]['x'] == CELLWIDTH or
             wormCoords[HEAD]['y'] == -1 or
             wormCoords[HEAD]['y'] == CELLHEIGHT):
-                return  # Game over.
+            # Game over.
+            return
         for wormBody in wormCoords[1:]:
-            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-                return  # Game over.
+            if (wormBody['x'] == wormCoords[HEAD]['x'] and
+                wormBody['y'] == wormCoords[HEAD]['y']):
+                # Game over.
+                return
         # Check if worm has eaten an apple.
-        if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
+        if (wormCoords[HEAD]['x'] == apple['x'] and
+            wormCoords[HEAD]['y'] == apple['y']):
             # Don't remove worm's last tail segment.
             apple = getRandomLocation()  # Set a new apple.
         else:
@@ -95,25 +99,30 @@ def runGame():
 
         # Move the worm by adding a segment in the direction it is moving
         if direction == UP:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
+            newHead = {'x': wormCoords[HEAD]['x'],
+                       'y': wormCoords[HEAD]['y'] - 1}
         elif direction == DOWN:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] + 1}
+            newHead = {'x': wormCoords[HEAD]['x'],
+                       'y': wormCoords[HEAD]['y'] + 1}
         elif direction == LEFT:
-            newHead = {'x': wormCoords[HEAD]['x'] - 1, 'y': wormCoords[HEAD]['y']}
+            newHead = {'x': wormCoords[HEAD]['x'] - 1,
+                       'y': wormCoords[HEAD]['y']}
         elif direction == RIGHT:
-            newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
+            newHead = {'x': wormCoords[HEAD]['x'] + 1,
+                       'y': wormCoords[HEAD]['y']}
         wormCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
-        drawWorm(wormCoords)
         drawApple(apple)
+        drawWorm(wormCoords)
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
 
 def drawPressKeyMsg():
-    pressKeySurf = BASICFONT.render('Press a Key to play.', True, DARKGREY)
+    pressKeySurf = BASICFONT.render('Press a Key to play.', True,
+                                    colors.DARKGREY)
     pressKeyRect = pressKeySurf.get_rect()
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
@@ -133,8 +142,9 @@ def checkForKeyPress():
 
 def showStartScreen():
     titleFont = pygame.font.Font('freesansbold.ttf', 100)
-    titleSurf1 = titleFont.render('Snake!', True, WHITE, DARKGREEN)
-    titleSurf2 = titleFont.render('Snake', True, GREEN)
+    titleSurf1 = titleFont.render('Snake!', True, colors.WHITE,
+                                  colors.DARKGREEN)
+    titleSurf2 = titleFont.render('Snake', True, colors.GREEN)
 
     degrees1 = 0
     degrees2 = 0
@@ -167,13 +177,14 @@ def terminate():
 
 
 def getRandomLocation():
-    return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
+    return {'x': random.randint(0, CELLWIDTH - 1),
+            'y': random.randint(0, CELLHEIGHT - 1)}
 
 
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    gameSurf = gameOverFont.render('Game', True, WHITE)
-    overSurf = gameOverFont.render('Over', True, WHITE)
+    gameSurf = gameOverFont.render('Game', True, colors.WHITE)
+    overSurf = gameOverFont.render('Over', True, colors.WHITE)
     gameRect = gameSurf.get_rect()
     overRect = overSurf.get_rect()
     gameRect.midtop = (WINDOWWIDTH / 2, 10)
@@ -182,6 +193,7 @@ def showGameOverScreen():
     DISPLAYSURF.blit(gameSurf, gameRect)
     DISPLAYSURF.blit(overSurf, overRect)
     drawPressKeyMsg()
+    pygame.display.update()
     pygame.time.wait(500)
     checkForKeyPress()  # Clear out any key presses in the event queue.
 
@@ -192,7 +204,7 @@ def showGameOverScreen():
 
 
 def drawScore(score):
-    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
+    scoreSurf = BASICFONT.render('Score: %s' % (score), True, colors.WHITE)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
@@ -203,23 +215,26 @@ def drawWorm(wormCoords):
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
-        wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, colors.DARKGREEN, wormSegmentRect)
+        wormInnerSegmentRect = pygame.Rect(x + 4, y + 4,
+                                           CELLSIZE - 8, CELLSIZE - 8)
+        pygame.draw.rect(DISPLAYSURF, colors.GREEN, wormInnerSegmentRect)
 
 
 def drawApple(coord):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    pygame.draw.rect(DISPLAYSURF, RED, appleRect)
+    pygame.draw.rect(DISPLAYSURF, colors.RED, appleRect)
 
 
 def drawGrid():
     for x in range(0, WINDOWWIDTH, CELLSIZE):  # Draw vertical lines.
-        pygame.draw.line(DISPLAYSURF, DARKGREY, (x, 0), (x, WINDOWHEIGHT))
+        pygame.draw.line(DISPLAYSURF, colors.DARKGREY, (x, 0),
+                         (x, WINDOWHEIGHT))
     for y in range(0, WINDOWHEIGHT, CELLSIZE):  # Draw horizontal lines.
-        pygame.draw.line(DISPLAYSURF, DARKGREY, (0, y), (WINDOWWIDTH, y))
+        pygame.draw.line(DISPLAYSURF, colors.DARKGREY, (0, y),
+                         (WINDOWWIDTH, y))
 
 
 if __name__ == '__main__':

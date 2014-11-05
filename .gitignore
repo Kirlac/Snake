@@ -1,2 +1,3 @@
 # Ignored files
 *.nja
+__pycache__
