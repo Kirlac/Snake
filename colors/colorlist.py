@@ -2,6 +2,7 @@ class Colors:
     # RGB
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
+    ALMOSTBLACK = (16, 16, 16)
 
     RED = (255, 0, 0)
     DARKRED = (128, 0, 0)
@@ -26,3 +27,6 @@ class Colors:
 
     GREY = (128, 128, 128)
     DARKGREY = (64, 64, 64)
+
+    BROWN = (128, 64, 0)
+    DARKBROWN = (64, 32, 0)
