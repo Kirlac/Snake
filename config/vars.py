@@ -3,7 +3,8 @@ from colors.colorlist import Colors
 
 class Vars:
 
-    FPS = 15
+    COREFPS = 30
+    GAMEFPS = 15
     WINDOWWIDTH = 640
     WINDOWHEIGHT = 480
     CELLSIZE = 20
@@ -16,3 +17,15 @@ class Vars:
     DOWN = 'down'
     LEFT = 'left'
     RIGHT = 'right'
+
+    MULTIPLAYERGAME = False
+
+    MAINMENU = ['START SINGLE PLAYER GAME',
+                'START TWO PLAYER GAME',
+                'OPTIONS',
+                'EXIT']
+
+    MENUSINGLEPLAYER = 0
+    MENUMULTIPLAYER = 1
+    MENUOPTIONS = 2
+    MENUEXIT = 3

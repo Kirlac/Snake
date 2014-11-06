@@ -1,7 +1,12 @@
+# BASED ON:
 # Wormy (a Nibbles clone)
 # By Al Sweigart al@inventwithpython.com
 # http://inventwithpython.com/pygame
 # Creative Commons BY-NC-SA 3.0 US
+#
+# EDITED BY:
+# Rikki Calteaux
+# http://www.kirlac.com
 
 import sys
 
@@ -25,9 +30,6 @@ def main():
     pygame.display.set_caption('Snake')
 
     showStartScreen()
-    while True:
-        runGame()
-        showGameOverScreen()
 
 
 def runGame():
@@ -66,14 +68,14 @@ def runGame():
         P1SNAKE.draw(DISPLAYSURF)
         drawScore(len(P1SNAKE.coords) - 3)
         pygame.display.update()
-        FPSCLOCK.tick(Vars.FPS)
+        FPSCLOCK.tick(Vars.GAMEFPS)
 
 
 def drawPressKeyMsg():
-    pressKeySurf = BASICFONT.render('Press a Key to play.', True,
+    pressKeySurf = BASICFONT.render('Press any key to continue.', True,
                                     Colors.DARKGREY)
     pressKeyRect = pressKeySurf.get_rect()
-    pressKeyRect.topleft = (Vars.WINDOWWIDTH - 200, Vars.WINDOWHEIGHT - 30)
+    pressKeyRect.center = (Vars.WINDOWWIDTH / 2, Vars.WINDOWHEIGHT - 30)
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
 
 
@@ -93,36 +95,74 @@ def showStartScreen():
     titleFont = pygame.font.Font('freesansbold.ttf', 100)
     titleSurf1 = titleFont.render('Snake!', True, Colors.WHITE,
                                   Colors.DARKGREEN)
-    titleSurf2 = titleFont.render('Snake', True, Colors.GREEN)
-
-    degrees1 = 0
-    degrees2 = 0
+    currentSelection = Vars.MENUSINGLEPLAYER
     while True:
         DISPLAYSURF.fill(Vars.BGCOLOR)
-        rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
-        rotatedRect1 = rotatedSurf1.get_rect()
-        rotatedRect1.center = (Vars.WINDOWWIDTH / 2, Vars.WINDOWHEIGHT / 2)
-        DISPLAYSURF.blit(rotatedSurf1, rotatedRect1)
+        titleRect1 = titleSurf1.get_rect()
+        titleRect1.center = (Vars.WINDOWWIDTH / 2, Vars.WINDOWHEIGHT / 3)
+        DISPLAYSURF.blit(titleSurf1, titleRect1)
 
-        rotatedSurf2 = pygame.transform.rotate(titleSurf2, degrees2)
-        rotatedRect2 = rotatedSurf2.get_rect()
-        rotatedRect2.center = (Vars.WINDOWWIDTH / 2, Vars.WINDOWHEIGHT / 2)
-        DISPLAYSURF.blit(rotatedSurf2, rotatedRect2)
+        drawStartMenu(currentSelection)
 
-        drawPressKeyMsg()
+        keyPress = checkForKeyPress()
 
-        if checkForKeyPress():
-            pygame.event.get()  # Clear event queue.
-            return
+        if keyPress == K_RETURN:
+            makeSelection(currentSelection)
+        elif keyPress is not None:
+            currentSelection = changeSelectedItem(keyPress, currentSelection)
+
         pygame.display.update()
-        FPSCLOCK.tick(Vars.FPS)
-        degrees1 += 3  # Rotate by 3 degrees each frame.
-        degrees2 += 7  # Rotate by 7 degrees each frame.
+        FPSCLOCK.tick(Vars.COREFPS)
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
+def changeSelectedItem(key, selected):
+    if key == K_UP:
+        selected -= 1
+    elif key == K_DOWN:
+        selected += 1
+
+    return selected % len(Vars.MAINMENU)
+
+
+def drawStartMenu(selection):
+    for i, menuItem in enumerate(Vars.MAINMENU):
+        if selection == i:
+            itemSurf = BASICFONT.render(menuItem, True,
+                Colors.ALMOSTBLACK, Colors.WHITE)
+        else:
+            itemSurf = BASICFONT.render(menuItem, True,
+                Colors.WHITE)
+        itemRect = itemSurf.get_rect()
+        itemRect.center = (Vars.WINDOWWIDTH / 2,
+            Vars.WINDOWHEIGHT / 3 * 2 + itemRect.height * i + 8 * i)
+        DISPLAYSURF.blit(itemSurf, itemRect)
+
+
+def makeSelection(selection):
+    pygame.event.get()  # Clear event queue.
+    if selection == Vars.MENUSINGLEPLAYER:
+        Vars.MULTIPLAYERGAME = False
+        runGame()
+        showGameOverScreen()
+    elif selection == Vars.MENUMULTIPLAYER:
+        Vars.MULTIPLAYERGAME = True
+        runGame()
+    elif selection == Vars.MENUOPTIONS:
+        terminate()
+    elif selection == Vars.MENUEXIT:
+        terminate()
+
+
+def showOptionsScreen():
+    somevar = 0
+
+
+def showSnakeSelectScreen():
+    somevar = 0
+
+
+def showPauseScreen():
+    somevar = 0
 
 
 def showGameOverScreen():
@@ -145,6 +185,11 @@ def showGameOverScreen():
         if checkForKeyPress():
             pygame.event.get()  # Clear event queue.
             return
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
 
 
 def drawScore(score):
