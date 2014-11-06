@@ -74,7 +74,7 @@ class Snake:
             x = coord['x'] * Vars.CELLSIZE
             y = coord['y'] * Vars.CELLSIZE
             segmentRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
-            pygame.draw.rect(DISPLAYSURF, Colors.DARKGREEN, segmentRect)
+            pygame.draw.rect(surf, Colors.DARKGREEN, segmentRect)
             wormInnerSegmentRect = pygame.Rect(
                 x + 4, y + 4, Vars.CELLSIZE - 8, Vars.CELLSIZE - 8)
-            pygame.draw.rect(DISPLAYSURF, Colors.GREEN, wormInnerSegmentRect)
+            pygame.draw.rect(surf, Colors.GREEN, wormInnerSegmentRect)

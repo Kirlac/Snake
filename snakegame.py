@@ -3,7 +3,6 @@
 # http://inventwithpython.com/pygame
 # Creative Commons BY-NC-SA 3.0 US
 
-import random
 import sys
 
 import pygame
@@ -32,10 +31,8 @@ def main():
 
 
 def runGame():
-    P1_SNAKE = Snake()
-
-    # Spawn food in a random place.
-    apple = getRandomLocation()
+    P1SNAKE = Snake()
+    FOOD = Food(P1SNAKE.coords)
 
     while True:  # Main game loop.
         for event in pygame.event.get():  # Event handling loop.
@@ -43,32 +40,31 @@ def runGame():
                 terminate()
             elif event.type == KEYDOWN:
                 if event.key == K_LEFT or event.key == K_a:
-                    P1_SNAKE.changeDirection(Vars.LEFT)
+                    P1SNAKE.changeDirection(Vars.LEFT)
                 elif event.key == K_RIGHT or event.key == K_d:
-                    P1_SNAKE.changeDirection(Vars.RIGHT)
+                    P1SNAKE.changeDirection(Vars.RIGHT)
                 elif event.key == K_UP or event.key == K_w:
-                    P1_SNAKE.changeDirection(Vars.UP)
+                    P1SNAKE.changeDirection(Vars.UP)
                 elif event.key == K_DOWN or event.key == K_s:
-                    P1_SNAKE.changeDirection(Vars.DOWN)
+                    P1SNAKE.changeDirection(Vars.DOWN)
                 elif event.key == K_ESCAPE:
                     terminate()
 
-        if P1_SNAKE.checkHit():
+        if P1SNAKE.checkHit():
             # Game over.
             return
 
-        if P1_SNAKE.checkEaten(apple):
-            P1_SNAKE.move(True)
-            # Respawn food.
-            apple = getRandomLocation()
+        if P1SNAKE.checkEaten(FOOD.coords):
+            P1SNAKE.move(True)
+            FOOD.respawn(P1SNAKE.coords)
         else:
-            P1_SNAKE.move(False)
+            P1SNAKE.move(False)
 
         DISPLAYSURF.fill(Vars.BGCOLOR)
         drawGrid()
-        drawApple(apple)
-        drawWorm(P1_SNAKE.coords)
-        drawScore(len(P1_SNAKE.coords) - 3)
+        FOOD.draw(DISPLAYSURF)
+        P1SNAKE.draw(DISPLAYSURF)
+        drawScore(len(P1SNAKE.coords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(Vars.FPS)
 
@@ -129,11 +125,6 @@ def terminate():
     sys.exit()
 
 
-def getRandomLocation():
-    return {'x': random.randint(0, Vars.CELLWIDTH - 1),
-            'y': random.randint(0, Vars.CELLHEIGHT - 1)}
-
-
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
     gameSurf = gameOverFont.render('Game', True, Colors.WHITE)
@@ -161,24 +152,6 @@ def drawScore(score):
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (Vars.WINDOWWIDTH - 120, 10)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
-
-
-def drawWorm(coords):
-    for coord in coords:
-        x = coord['x'] * Vars.CELLSIZE
-        y = coord['y'] * Vars.CELLSIZE
-        wormSegmentRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, Colors.DARKGREEN, wormSegmentRect)
-        wormInnerSegmentRect = pygame.Rect(
-            x + 4, y + 4, Vars.CELLSIZE - 8, Vars.CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, Colors.GREEN, wormInnerSegmentRect)
-
-
-def drawApple(coord):
-    x = coord['x'] * Vars.CELLSIZE
-    y = coord['y'] * Vars.CELLSIZE
-    appleRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
-    pygame.draw.rect(DISPLAYSURF, Colors.DARKBROWN, appleRect)
 
 
 def drawGrid():
