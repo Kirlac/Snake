@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
-class colors:
+class Colors:
     # RGB
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)

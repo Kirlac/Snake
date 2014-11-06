@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
-class food:
+class Food:
 
     def __init__(self):
         FOOD = 0
