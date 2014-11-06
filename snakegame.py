@@ -10,7 +10,7 @@ import pygame
 from pygame.locals import *
 
 from config.vars import Vars
-from colors.list import Colors
+from colors.colorlist import Colors
 from gameobjects.snake import Snake
 from gameobjects.food import Food
 
@@ -178,17 +178,17 @@ def drawApple(coord):
     x = coord['x'] * Vars.CELLSIZE
     y = coord['y'] * Vars.CELLSIZE
     appleRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
-    pygame.draw.rect(DISPLAYSURF, Colors.RED, appleRect)
+    pygame.draw.rect(DISPLAYSURF, Colors.DARKBROWN, appleRect)
 
 
 def drawGrid():
     # Draw vertical lines.
     for x in range(0, Vars.WINDOWWIDTH, Vars.CELLSIZE):
-        pygame.draw.line(DISPLAYSURF, Colors.DARKGREY, (x, 0),
+        pygame.draw.line(DISPLAYSURF, Colors.ALMOSTBLACK, (x, 0),
                          (x, Vars.WINDOWHEIGHT))
     # Draw horizontal lines.
     for y in range(0, Vars.WINDOWHEIGHT, Vars.CELLSIZE):
-        pygame.draw.line(DISPLAYSURF, Colors.DARKGREY, (0, y),
+        pygame.draw.line(DISPLAYSURF, Colors.ALMOSTBLACK, (0, y),
                          (Vars.WINDOWWIDTH, y))
 
 

@@ -1,4 +1,4 @@
-from colors.list import Colors
+from colors.colorlist import Colors
 
 
 class Vars:

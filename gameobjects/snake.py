@@ -1,6 +1,9 @@
 import random
 
+import pygame
+
 from config.vars import Vars
+from colors.colorlist import Colors
 
 
 class Snake:
@@ -65,3 +68,13 @@ class Snake:
 
         # Move the snake by adding a segment in the direction it is moving
         self.coords.insert(0, newHead)
+
+    def draw(self, surf):
+        for coord in self.coords:
+            x = coord['x'] * Vars.CELLSIZE
+            y = coord['y'] * Vars.CELLSIZE
+            segmentRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
+            pygame.draw.rect(DISPLAYSURF, Colors.DARKGREEN, segmentRect)
+            wormInnerSegmentRect = pygame.Rect(
+                x + 4, y + 4, Vars.CELLSIZE - 8, Vars.CELLSIZE - 8)
+            pygame.draw.rect(DISPLAYSURF, Colors.GREEN, wormInnerSegmentRect)
