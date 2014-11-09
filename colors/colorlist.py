@@ -30,3 +30,13 @@ class Colors:
 
     BROWN = (128, 64, 0)
     DARKBROWN = (64, 32, 0)
+
+    LIST = [[RED, DARKRED],
+            [GREEN, DARKGREEN],
+            [BLUE, DARKBLUE],
+            [YELLOW, DARKYELLOW],
+            [ORANGE, DARKORANGE],
+            [PINK, DARKPINK],
+            [PURPLE, DARKPURPLE],
+            [GREY, DARKGREY],
+            [BROWN, DARKBROWN]]

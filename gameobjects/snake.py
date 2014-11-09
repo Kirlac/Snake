@@ -1,6 +1,7 @@
 import random
 
 import pygame
+#from pygame.locals import K_LEFT, K_RIGHT
 
 from config.snakeconfig import Config
 from colors.colorlist import Colors
@@ -11,15 +12,9 @@ class Snake:
     HEAD = 0  # Syntactic sugar: index of the snake's head.
 
     def __init__(self):
-        # Set a random start point.
-        self.startx = random.randint(5, Config.CELLWIDTH - 6)
-        self.starty = random.randint(5, Config.CELLHEIGHT - 6)
-        self.coords = [{'x': self.startx, 'y': self.starty},
-            {'x': self.startx - 1, 'y': self.starty},
-            {'x': self.startx - 2, 'y': self.starty}]
-        self.direction = Config.RIGHT
-        self.newDirection = self.direction
-        self.alive = True
+        self.respawn()
+        self.colorIndex = random.randint(0, len(Colors.LIST))
+        self.color = Colors.LIST[self.colorIndex]
 
     def changeDirection(self, direction):
         if direction == Config.LEFT and self.direction != Config.RIGHT:
@@ -94,7 +89,26 @@ class Snake:
             x = coord['x'] * Config.CELLSIZE
             y = coord['y'] * Config.CELLSIZE
             segmentRect = pygame.Rect(x, y, Config.CELLSIZE, Config.CELLSIZE)
-            pygame.draw.rect(surf, Colors.DARKGREEN, segmentRect)
+            pygame.draw.rect(surf, self.color[1], segmentRect)
             wormInnerSegmentRect = pygame.Rect(
                 x + 4, y + 4, Config.CELLSIZE - 8, Config.CELLSIZE - 8)
-            pygame.draw.rect(surf, Colors.GREEN, wormInnerSegmentRect)
+            pygame.draw.rect(surf, self.color[0], wormInnerSegmentRect)
+
+    def changeColor(self, key):
+        if key == pygame.locals.K_LEFT:
+            self.colorIndex -= 1
+        elif key == pygame.locals.K_RIGHT:
+            self.colorIndex += 1
+        self.colorIndex %= len(Colors.LIST)
+        self.color = Colors.LIST[self.colorIndex]
+
+    def respawn(self):
+        # Set a random start point.
+        self.startx = random.randint(5, Config.CELLWIDTH - 6)
+        self.starty = random.randint(5, Config.CELLHEIGHT - 6)
+        self.coords = [{'x': self.startx, 'y': self.starty},
+            {'x': self.startx - 1, 'y': self.starty},
+            {'x': self.startx - 2, 'y': self.starty}]
+        self.direction = Config.RIGHT
+        self.newDirection = self.direction
+        self.alive = True

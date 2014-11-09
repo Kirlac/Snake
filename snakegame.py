@@ -20,7 +20,7 @@ from gameobjects.food import Food
 
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, SNAKE1, SNAKE2
 
     Config.loadSettings()
 
@@ -31,6 +31,9 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('Snake')
 
+    SNAKE1 = Snake()
+    SNAKE2 = Snake()
+
     showStartScreen()
 
 
@@ -38,51 +41,56 @@ def runGame():
     global DISPLAYSURF
 
     if Config.MULTIPLAYER:
-        SNAKES = {'P1': Snake(), 'P2': Snake()}
+        SNAKES = {'P1': SNAKE1, 'P2': SNAKE2}
     else:
-        SNAKES = {'P1': Snake()}
+        SNAKES = {'P1': SNAKE1}
+
+    for snakeID in SNAKES:
+        SNAKES[snakeID].respawn()
+
     FOOD = Food(SNAKES)
 
     while True:  # Main game loop.
-        events = pygame.event.get(KEYDOWN)
+        events = pygame.event.get()
         if len(events) > 0:
             for event in events:
-                if event.key == K_LEFT:
-                    SNAKES['P1'].changeDirection(Config.LEFT)
-                elif event.key == K_RIGHT:
-                    SNAKES['P1'].changeDirection(Config.RIGHT)
-                elif event.key == K_UP:
-                    SNAKES['P1'].changeDirection(Config.UP)
-                elif event.key == K_DOWN:
-                    SNAKES['P1'].changeDirection(Config.DOWN)
-                elif event.key == K_a:
-                    if Config.MULTIPLAYER:
-                        SNAKES['P2'].changeDirection(Config.LEFT)
-                    else:
+                if event.type == KEYDOWN:
+                    if event.key == K_LEFT:
                         SNAKES['P1'].changeDirection(Config.LEFT)
-                elif event.key == K_d:
-                    if Config.MULTIPLAYER:
-                        SNAKES['P2'].changeDirection(Config.RIGHT)
-                    else:
+                    elif event.key == K_RIGHT:
                         SNAKES['P1'].changeDirection(Config.RIGHT)
-                elif event.key == K_w:
-                    if Config.MULTIPLAYER:
-                        SNAKES['P2'].changeDirection(Config.UP)
-                    else:
+                    elif event.key == K_UP:
                         SNAKES['P1'].changeDirection(Config.UP)
-                elif event.key == K_s:
-                    if Config.MULTIPLAYER:
-                        SNAKES['P2'].changeDirection(Config.DOWN)
-                    else:
+                    elif event.key == K_DOWN:
                         SNAKES['P1'].changeDirection(Config.DOWN)
-                elif event.key == K_ESCAPE:
-                    resumeGame = showPauseScreen(FOOD, SNAKES)
-                    if not resumeGame:
-                        return
-                    else:
-                        pygame.time.wait(100)
-                        # Clear out any key presses in the event queue.
-                        checkForKeyPress()
+                    elif event.key == K_a:
+                        if Config.MULTIPLAYER:
+                            SNAKES['P2'].changeDirection(Config.LEFT)
+                        else:
+                            SNAKES['P1'].changeDirection(Config.LEFT)
+                    elif event.key == K_d:
+                        if Config.MULTIPLAYER:
+                            SNAKES['P2'].changeDirection(Config.RIGHT)
+                        else:
+                            SNAKES['P1'].changeDirection(Config.RIGHT)
+                    elif event.key == K_w:
+                        if Config.MULTIPLAYER:
+                            SNAKES['P2'].changeDirection(Config.UP)
+                        else:
+                            SNAKES['P1'].changeDirection(Config.UP)
+                    elif event.key == K_s:
+                        if Config.MULTIPLAYER:
+                            SNAKES['P2'].changeDirection(Config.DOWN)
+                        else:
+                            SNAKES['P1'].changeDirection(Config.DOWN)
+                    elif event.key == K_ESCAPE:
+                        resumeGame = showPauseScreen(FOOD, SNAKES)
+                        if not resumeGame:
+                            return
+                        else:
+                            pygame.time.wait(100)
+                            # Clear out any key presses in the event queue.
+                            checkForKeyPress()
 
         for snakeID in SNAKES:
             if SNAKES[snakeID].checkHit():
@@ -338,8 +346,43 @@ def makeOptionsSelection(selection):
 
 
 def showSnakeSelectScreen():
-    '''
-    '''
+    titleFont = pygame.font.Font('freesansbold.ttf', 50)
+    titleSurf = titleFont.render('CHOOSE YOUR COLOR', True, Colors.WHITE,
+                                  Colors.DARKGREEN)
+    titleRect = titleSurf.get_rect()
+    titleRect.center = (Config.SCREENSIZE['width'] / 2,
+        Config.SCREENSIZE['height'] / 3)
+
+    if Config.MULTIPLAYER:
+        ''''''
+    else:
+        startx = Config.CELLWIDTH / 2
+        starty = Config.CELLHEIGHT / 2
+        SNAKE1.coords = [{'x': startx, 'y': starty},
+            {'x': startx, 'y': starty + 1},
+            {'x': startx, 'y': starty + 2}]
+
+    pygame.time.wait(100)
+    checkForKeyPress()  # Clear out any key presses in the event queue.
+
+    while True:
+        DISPLAYSURF.fill(Config.BGCOLOR)
+        #for snakeID in SNAKES:
+        SNAKE1.draw(DISPLAYSURF)
+
+        DISPLAYSURF.blit(titleSurf, titleRect)
+
+        keyPress = checkForKeyPress()
+
+        if keyPress == K_RETURN:
+            return True
+        elif keyPress == K_ESCAPE:
+            return False
+        elif keyPress == K_LEFT or keyPress == K_RIGHT:
+            SNAKE1.changeColor(keyPress)
+
+        pygame.display.update()
+        FPSCLOCK.tick(Config.FPS)
 
 
 def showPauseScreen(FOOD, SNAKES):
