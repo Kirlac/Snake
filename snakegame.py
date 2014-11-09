@@ -99,7 +99,8 @@ def runGame():
             SNAKES[snakeID].draw(DISPLAYSURF)
             drawScore(len(SNAKES[snakeID].coords) - 3, snakeID)
         pygame.display.update()
-        FPSCLOCK.tick(Config.GAMEFPS)
+        gameFPS = Config.SETTINGS['difficulty'] + 1
+        FPSCLOCK.tick(gameFPS)
 
 
 def drawPressKeyMsg():
@@ -220,6 +221,7 @@ def showOptionsScreen():
             if makeOptionsSelection(currentSelection):
                 return
         elif keyPress == K_ESCAPE:
+            Config.loadSettings()
             return
         elif (keyPress == K_UP or keyPress == K_DOWN or
                 keyPress == K_LEFT or keyPress == K_RIGHT):
@@ -238,7 +240,7 @@ def changeOptionsSelectedItem(key, selected):
         selected += 1
     elif key == K_LEFT:
         if selected == Config.OPTIONSDIFFICULTY:
-            Config.SETTINGS['difficulty'] = (
+            Config.SETTINGS['difficulty'] = int(
                 (Config.SETTINGS['difficulty'] - 2) % Config.MAXDIFFICULTY)
         elif selected == Config.OPTIONSWRAP:
             Config.SETTINGS['screenWrap'] = not Config.SETTINGS['screenWrap']
@@ -256,7 +258,7 @@ def changeOptionsSelectedItem(key, selected):
                 (Config.SCREENSIZE['width'], Config.SCREENSIZE['height']))
     elif key == K_RIGHT:
         if selected == Config.OPTIONSDIFFICULTY:
-            Config.SETTINGS['difficulty'] = (
+            Config.SETTINGS['difficulty'] = int(
                 (Config.SETTINGS['difficulty'] + 2) % Config.MAXDIFFICULTY)
         elif selected == Config.OPTIONSWRAP:
             Config.SETTINGS['screenWrap'] = not Config.SETTINGS['screenWrap']

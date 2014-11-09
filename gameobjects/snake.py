@@ -38,9 +38,14 @@ class Snake:
                 self.coords[Snake.HEAD]['y'] == -1 or
                 self.coords[Snake.HEAD]['y'] == Config.CELLHEIGHT or
                 self.coords[Snake.HEAD] in self.coords[1:]):
-            # Game over.
-            self.alive = False
-            return True
+            if (Config.SETTINGS['screenWrap'] and
+                    self.coords[Snake.HEAD] not in self.coords[1:]):
+                # Wrap around.
+                return False
+            else:
+                # Game over.
+                self.alive = False
+                return True
         else:
             return False
 
@@ -66,6 +71,16 @@ class Snake:
         elif self.direction == Config.RIGHT:
             newHead = {'x': self.coords[Snake.HEAD]['x'] + 1,
                        'y': self.coords[Snake.HEAD]['y']}
+
+        if Config.SETTINGS['screenWrap']:
+            if newHead['x'] == -1:
+                newHead['x'] = Config.CELLWIDTH - 1
+            elif newHead['x'] == Config.CELLWIDTH:
+                newHead['x'] = 0
+            elif newHead['y'] == -1:
+                newHead['y'] = Config.CELLHEIGHT - 1
+            elif newHead['y'] == Config.CELLHEIGHT:
+                newHead['y'] = 0
 
         if not growing:
             # remove the last tail segment.

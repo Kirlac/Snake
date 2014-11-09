@@ -18,12 +18,11 @@ class Config:
                 'screenWrap': False}
 
     FPS = 30
-    GAMEFPS = 15
     CELLSIZE = 20
     SCREENSIZE = SCREENSIZEOPTIONS[SETTINGS['screenSize']]
     CELLWIDTH = int(SCREENSIZE['width'] / CELLSIZE)
     CELLHEIGHT = int(SCREENSIZE['height'] / CELLSIZE)
-    MAXDIFFICULTY = 30
+    MAXDIFFICULTY = 50
 
     BGCOLOR = Colors.BLACK
 
@@ -83,6 +82,7 @@ class Config:
     def saveSettings():
         with open(Config.SETTINGSFILE, 'wb') as settings:
             Config.SETTINGS = pickle.dump(Config.SETTINGS, settings)
+        Config.loadSettings()
 
     def resetSettings():
         Config.SETTINGS = {'screenSize': 2,
