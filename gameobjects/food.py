@@ -2,28 +2,30 @@ import random
 
 import pygame
 
-from config.vars import Vars
+from config.snakeconfig import Config
 from colors.colorlist import Colors
 
 
 class Food:
 
-    def __init__(self, snakeCoords):
+    def __init__(self, snakes):
         # Spawn food in a random place.
-        self.respawn(snakeCoords)
+        self.respawn(snakes)
+        self.color = Colors.WHITE
 
     @staticmethod
     def getRandomLocation():
-        return {'x': random.randint(0, Vars.CELLWIDTH - 1),
-                'y': random.randint(0, Vars.CELLHEIGHT - 1)}
+        return {'x': random.randint(0, Config.CELLWIDTH - 1),
+                'y': random.randint(0, Config.CELLHEIGHT - 1)}
 
     def draw(self, surf):
-        x = self.coords['x'] * Vars.CELLSIZE
-        y = self.coords['y'] * Vars.CELLSIZE
-        foodRect = pygame.Rect(x, y, Vars.CELLSIZE, Vars.CELLSIZE)
-        pygame.draw.rect(surf, Colors.DARKBROWN, foodRect)
+        x = self.coords['x'] * Config.CELLSIZE
+        y = self.coords['y'] * Config.CELLSIZE
+        foodRect = pygame.Rect(x, y, Config.CELLSIZE, Config.CELLSIZE)
+        pygame.draw.rect(surf, self.color, foodRect)
 
-    def respawn(self, snakeCoords):
+    def respawn(self, snakes):
         self.coords = Food.getRandomLocation()
-        if self.coords in snakeCoords:
-            self.respawn(snakeCoords)
+        for snakeID in snakes:
+            if self.coords in snakes[snakeID].coords:
+                self.respawn(snakes)
